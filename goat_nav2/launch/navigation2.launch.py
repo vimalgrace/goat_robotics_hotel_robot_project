@@ -77,7 +77,6 @@ def generate_launch_description():
                 'params_file': param_dir,
                 "autostart": "true"}.items(),
     )
-    
 
     rviz_node = Node(
             package='rviz2',
