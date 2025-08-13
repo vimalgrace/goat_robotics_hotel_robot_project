@@ -70,7 +70,15 @@ class HotelNavigator(BasicNavigator):
 
         self.activate_gui()
 
+    
     def reset_flags(self):
+        """
+        Resets the status flags and variables related to the robot's order handling and navigation.
+
+        This method initializes the order statuses, confirmation text, target timer, 
+        table poses, and various flags that control the robot's behavior and navigation 
+        to ensure a fresh start for the robot's operations.
+        """
 
         self.table_1_order_status = "Not Ordered"
         self.table_2_order_status = "Not Ordered"
@@ -114,6 +122,14 @@ class HotelNavigator(BasicNavigator):
 
         
     def update_timer(self):
+        """
+        Updates the timer and manages the order processing workflow.
+        This method continuously checks for orders in the orders_list. If there are orders, it navigates to the kitchen to confirm the order. 
+        If the order is not confirmed, it resets the orders list and returns to the home position. 
+        If the order is confirmed, it proceeds to deliver the orders to the respective tables. 
+        The method also handles the case where the robot must return to the kitchen for additional orders.
+        The loop continues until the rclpy is no longer active.
+        """
 
         while rclpy.ok():
 
@@ -156,11 +172,18 @@ class HotelNavigator(BasicNavigator):
 
 
     def cancel_table_orders(self):
+        """
+        Cancels the orders for all tables by updating their status labels to indicate that the orders have been aborted.
+        """
         self.table_1_order_status_label.config(text = f"Order Aborted")
         self.table_2_order_status_label.config(text = f"Order Aborted")
         self.table_3_order_status_label.config(text = f"Order Aborted")
 
     def reset_table_orders(self):
+        """
+        Resets the order status labels for all tables to 'Not Ordered' 
+        and updates the timeout confirmation status bar.
+        """
         self.table_1_order_status_label.config(text = f"Not Ordered")
         self.table_2_order_status_label.config(text = f"Not Ordered")
         self.table_3_order_status_label.config(text = f"Not Ordered")
@@ -168,6 +191,15 @@ class HotelNavigator(BasicNavigator):
         
 
     def activate_gui(self):
+        """
+        Activate the graphical user interface (GUI) for the robot navigation system.
+
+        This method creates and arranges various buttons and labels in the GUI,
+        including buttons for resetting the system, placing orders at different tables,
+        canceling orders, and displaying the status of each order. It also includes
+        a label for order confirmation status. The GUI runs in the main event loop
+        until closed by the user.
+        """
 
         self.reset_button = tk.Button(self.root, text = "R",command = self.reset_all)
         self.reset_button.grid(row = 0, column = 3)
@@ -217,9 +249,16 @@ class HotelNavigator(BasicNavigator):
 
         self.root.mainloop()
 
-
-    # reset all the variables
     def reset_all(self):
+        """
+        Resets all tasks and flags for the robot.
+        This method attempts to cancel any ongoing tasks, reset flags and table orders,
+        and move the robot to its home position. It performs these actions in a loop
+        to ensure that all tasks are properly canceled. If any exception occurs during
+        the process, it will be caught and printed.
+        Raises:
+            Exception: If an error occurs during the reset process.
+        """
         try:
             for _ in range(3):
                 self.cancelTask()
@@ -237,6 +276,11 @@ class HotelNavigator(BasicNavigator):
 
 
     def callback_table_1_order(self):
+        """
+        Callback function to handle the order received for table 1.
+        Updates the order status and the corresponding label, 
+        and adds the table 1 pose to the orders list if not already present.
+        """
         self.order_1_received = True
         self.table_1_order_status = "Ordered"
         self.table_1_order_status_label.config(text = f"{self.table_1_order_status}")
@@ -246,6 +290,11 @@ class HotelNavigator(BasicNavigator):
 
 
     def callback_table_2_order(self):
+        """
+        Callback function to handle the order received for table 2.
+        Updates the order status and the corresponding label, and adds 
+        the table 2 pose to the orders list if it is not already present.
+        """
         self.order_2_received = True
         self.table_2_order_status = "Ordered"
         self.table_2_order_status_label.config(text = f"{self.table_2_order_status}")
@@ -254,6 +303,11 @@ class HotelNavigator(BasicNavigator):
             self.orders_list["table_2"] = self.table_2_pose
 
     def callback_table_3_order(self):
+        """
+        Callback function to handle the order for table 3.
+        Sets the order status to 'Ordered', updates the corresponding label,
+        and adds the table 3 pose to the orders list if it is not already present.
+        """
         self.order_3_received = True
         self.table_3_order_status = "Ordered"
         self.table_3_order_status_label.config(text = f"{self.table_3_order_status}")
@@ -263,6 +317,10 @@ class HotelNavigator(BasicNavigator):
 
 
     def callback_table_1_order_cancel(self):
+        """
+        Callback function to handle the cancellation of an order for table 1.
+        It updates the order status, modifies the orders list, and cancels the current task if applicable.
+        """
         self.order_1_cancelled = True
         self.table_1_order_status = "Order Cancelled"
         self.table_1_order_status_label.config(text = f"{self.table_1_order_status}")
@@ -274,6 +332,11 @@ class HotelNavigator(BasicNavigator):
             self.cancelTask()
 
     def callback_table_2_order_cancel(self):
+        """
+        Callback function to handle the cancellation of an order for table 2.
+        It updates the order status, modifies the orders list, and cancels the task
+        if the current table is table 2.
+        """
         self.order_2_cancelled = True
         self.table_2_order_status = "Order Cancelled"
         self.table_2_order_status_label.config(text = f"{self.table_2_order_status}")
@@ -287,6 +350,11 @@ class HotelNavigator(BasicNavigator):
 
 
     def callback_table_3_order_cancel(self):
+        """
+        Callback function to handle the cancellation of an order for table 3.
+        It updates the order status, modifies the orders list, and cancels the task
+        if the current table is table 3.
+        """
         self.order_3_cancelled = True
         self.table_3_order_status = "Order Cancelled"
         self.table_3_order_status_label.config(text = f"{self.table_3_order_status}")
@@ -300,6 +368,14 @@ class HotelNavigator(BasicNavigator):
 
     
     def confirm_order(self,text):
+        """
+        Confirm an order by displaying a confirmation button and waiting for user input.
+        Parameters:
+            text (str): The text to display in the confirmation message.
+        This method creates a confirmation button and updates the timeout message. 
+        It waits for a specified duration for the user to confirm the order. 
+        If confirmed, it breaks the waiting loop; otherwise, it hides the button after the timeout.
+        """
         self.order_confirmation = tk.Button(self.root,text = f"{self.confirmation_text}",command = self.callback_confirm_order)
         self.order_confirmation.grid(row = 4,columnspan=3,padx=10, pady=10)
 
@@ -463,6 +539,13 @@ class HotelNavigator(BasicNavigator):
 
 
     def update_respective_table(self, table_name,text):
+        """
+        Updates the order status for the specified table and updates the corresponding label.
+
+        Parameters:
+            table_name (str): The name of the table to update (e.g., "table_1", "table_2", "table_3").
+            text (str): The text to display as the order status for the specified table.
+        """
         if table_name == "table_1":
             self.table_1_order_status = f"Order {text}"
             self.table_1_order_status_label.config(text = f"{self.table_1_order_status}")
@@ -478,6 +561,15 @@ class HotelNavigator(BasicNavigator):
 
 
     def go_to_table_position(self,table_name,table_pose):
+        """
+        Navigate the robot to the specified table position.
+        Parameters:
+            table_name (str): The name of the table to navigate to.
+            table_pose (tuple): The pose (x, y, z) coordinates of the table.
+        This method updates the current navigating position, displays the status,
+        and confirms the order if the table is in the orders list. It also handles
+        the state of the navigation process.
+        """
 
         self.current_navigating_position = table_pose
 
@@ -509,6 +601,15 @@ class HotelNavigator(BasicNavigator):
 
 
     def go_to_kitchen_position(self,kitchen_pose):
+        """
+        Navigate the robot to the specified kitchen position.
+        Parameters:
+            kitchen_pose (tuple): A tuple containing the coordinates (x, y, z) of the kitchen position.
+        This method updates the current navigating position, changes the status label to indicate 
+        the robot is moving to the kitchen, and prints the target pose. It then creates a pose 
+        stamped object and commands the robot to go to that pose, waiting for the result before 
+        updating the status label to indicate that the kitchen has been reached.
+        """
 
         self.current_navigating_position = kitchen_pose
 
@@ -531,6 +632,18 @@ class HotelNavigator(BasicNavigator):
 
 
     def go_to_home_position(self):
+        """
+        Navigate the robot to the predefined home position.
+
+        This method updates the status label to indicate that the robot is 
+        going to the home position, sets the flag for going to home, and 
+        prints a message to the console. It then creates a pose stamped 
+        for the home position and calls the method to navigate to that 
+        pose. Finally, it waits for the navigation to complete and 
+        displays the result.
+
+        Home position coordinates: [3.585, -4.93, 0.0]
+        """
 
         self.status_label.config(text = f"Going to home")
 
