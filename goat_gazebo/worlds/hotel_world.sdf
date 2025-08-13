@@ -1,0 +1,144 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<sdf version='1.10'>
+  <world name='goat_hotel_world'>
+  <physics name="4ms" type="ode">
+      <max_step_size>0.004</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics">
+        </plugin>
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands">
+        </plugin>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster">
+        </plugin>
+    <plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu">
+        </plugin>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+    <plugin filename="gz-sim-contact-system" name="gz::sim::systems::Contact">
+        </plugin>
+
+
+
+    
+    <scene>
+      <ambient>1.0 1.0 1.0</ambient>
+      <background>0.8 0.8 0.8</background>
+    </scene>
+
+
+    <model name='ground_plane'>
+      <static>true</static>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <surface>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+            <contact/>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <material>
+            <ambient>0.800000012 0.800000012 0.800000012 1</ambient>
+            <diffuse>0.800000012 0.800000012 0.800000012 1</diffuse>
+            <specular>0.800000012 0.800000012 0.800000012 1</specular>
+          </material>
+        </visual>
+        <pose>0.0000 0.0000 0.0000 0.0000 0.0000 0.0000</pose>
+        <enable_wind>false</enable_wind>
+        
+      </link>
+      <pose>0.0000 0.0000 0.0000 0.0000 0.0000 0.0000</pose>
+      <self_collide>false</self_collide>
+    </model>
+
+
+
+    <plugin filename="toggle_charging" name="toggle_charging" />
+    <plugin name="toggle_floors" filename="toggle_floors">
+      <floor name="goat_hotel" model_name="goat_goat_hotel">
+        <model name="OpenRobotics/Table" />
+        <model name="OpenRobotics/Table_2" />
+        <model name="OpenRobotics/Table_3" />
+        <model name="OpenRobotics/Chair" />
+        <model name="OpenRobotics/Chair_2" />
+        <model name="OpenRobotics/Chair_3" />
+      </floor>
+    </plugin>
+
+
+    <include>
+      <name>OpenRobotics/Table</name>
+      <uri>model://Table</uri>
+      <pose>1.6216636392180193 -1.797115114876023 0.0 0 0 1.5708</pose>
+      <static>True</static>
+    </include>
+    <include>
+      <name>OpenRobotics/Table_2</name>
+      <uri>model://Table</uri>
+      <pose>1.654413914668573 -8.350770235265264 0.0 0 0 1.5708</pose>
+      <static>True</static>
+    </include>
+    <include>
+      <name>OpenRobotics/Table_3</name>
+      <uri>model://Table</uri>
+      <pose>7.585463798553549 -4.664339230046315 0.0 0 0 1.5708</pose>
+      <static>True</static>
+    </include>
+    <include>
+      <name>OpenRobotics/Chair</name>
+      <uri>model://Chair</uri>
+      <pose>0.9499079893276581 -1.797115114876023 0.0 0 0 0.0</pose>
+      <static>True</static>
+    </include>
+    <include>
+      <name>OpenRobotics/Chair_2</name>
+      <uri>model://Chair</uri>
+      <pose>8.224469172993357 -4.647989092531307 0.0 0 0 -3.1341</pose>
+      <static>True</static>
+    </include>
+    <include>
+      <name>OpenRobotics/Chair_3</name>
+      <uri>model://Chair</uri>
+      <pose>0.999058402713756 -8.31801995981471 0.0 0 0 -0.0392</pose>
+      <static>True</static>
+    </include>
+    <include>
+      <name>goat_goat_hotel</name>
+      <uri>model://goat_goat_hotel</uri>
+      <pose>0 0 0.0 0 0 0</pose>
+    </include>
+
+
+
+    
+     <light type="directional" name="sun">
+      <cast_shadows>false</cast_shadows>
+      <pose>0.0000 0.0000 10.0000 0.0000 0.0000 0.0000</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.8 0.8 0.8 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+  </world>
+</sdf>
